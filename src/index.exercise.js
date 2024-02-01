@@ -5,6 +5,7 @@ import { Logo } from './components/logo';
 // 🐨 you'll also need to import the Logo component from './components/logo'
 import { Dialog } from "@reach/dialog";
 import "@reach/dialog/styles.css";
+import LoginForm from 'components/LoginForm';
 
 // 🐨 create an App component here and render the logo, the title ("Bookshelf"), a login button, and a register button.
 // 🐨 for fun, you can add event handlers for both buttons to alert that the button was clicked
@@ -31,10 +32,7 @@ function App() {
             <button onClick={registerClickHandler}>Register</button>
         </div>
         <Dialog isOpen={isDialogVisible} onDismiss={closeDialog}>
-            <button className="close-button" onClick={closeDialog}>
-                <span aria-hidden>×</span>
-            </button>
-            <p>Hello there. I am a dialog</p>
+            <LoginForm submitHandler={console.log} buttonText='Login' />
         </Dialog>
     </div>
 }
