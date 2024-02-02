@@ -7,7 +7,7 @@ import {FaRegCalendarAlt} from 'react-icons/fa'
 import Tooltip from '@reach/tooltip'
 import {useParams} from 'react-router-dom'
 // 🐨 you'll need these:
-// import {useQuery, useMutation, queryCache} from 'react-query'
+import {useQuery, useMutation, useQueryClient } from 'react-query'
 import {client} from 'utils/api-client'
 import {formatDate} from 'utils/misc'
 import * as mq from 'styles/media-queries'
@@ -16,7 +16,6 @@ import {Textarea} from 'components/lib'
 import {Rating} from 'components/rating'
 import {StatusButtons} from 'components/status-buttons'
 import bookPlaceholderSvg from 'assets/book-placeholder.svg'
-import { useQuery } from 'react-query'
 
 const loadingBook = {
   title: 'Loading...',
@@ -133,15 +132,17 @@ function ListItemTimeframe({listItem}) {
 }
 
 function NotesTextarea({listItem, user}) {
-  // 🐨 call useMutation here
-  // the mutate function should call the list-items/:listItemId endpoint with a PUT
-  //   and the updates as data. The mutate function will be called with the updates
-  //   you can pass as data.
-  // 💰 if you want to get the list-items cache updated after this query finishes
-  // then use the `onSettled` config option to queryCache.invalidateQueries('list-items')
-  // 💣 DELETE THIS ESLINT IGNORE!! Don't ignore the exhaustive deps rule please
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const mutate = () => {}
+  const queryCache = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationFn: (data) => client(`/list-items/${listItem.id}`, {
+      method: 'PUT',
+      data,
+      token: user.token
+    }),
+    onSettled: () => queryCache.invalidateQueries('list-items')
+  })
+
   const debouncedMutate = React.useMemo(
     () => debounceFn(mutate, {wait: 300}),
     [mutate],
