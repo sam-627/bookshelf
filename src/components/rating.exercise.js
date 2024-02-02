@@ -30,7 +30,7 @@ function Rating({ listItem, user }) {
   // 💰 if you want to get the list-items cache updated after this query finishes
   // then use the `onSettled` config option to queryCache.invalidateQueries('list-items')
   const { mutateAsync: update } = useMutation({
-    mutationFn: (data) => client(`/list-items/${listItem.id}`, {
+    mutationFn: (data) => client(`list-items/${listItem.id}`, {
       method: 'PUT',
       data,
       token: user.token
