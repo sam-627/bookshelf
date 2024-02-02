@@ -12,6 +12,7 @@ import {useAsync} from './utils/hooks'
 import {AuthenticatedApp} from './authenticated-app'
 import {UnauthenticatedApp} from './unauthenticated-app'
 
+
 async function getUser() {
   let user = null
 

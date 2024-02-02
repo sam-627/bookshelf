@@ -11,6 +11,7 @@ import * as colors from 'styles/colors'
 import {BookRow} from 'components/book-row'
 import {BookListUL, Spinner, Input} from 'components/lib'
 import bookPlaceholderSvg from 'assets/book-placeholder.svg'
+import { useQuery } from 'react-query'
 
 const loadingBook = {
   title: 'Loading...',
@@ -33,20 +34,14 @@ function DiscoverBooksScreen({user}) {
   // the queryKey should be ['bookSearch', {query}]
   // the queryFn should be the same thing we have in the run function below
   // you'll get back the same stuff you get from useAsync, (except the run function)
-  const {data, error, run, isLoading, isError, isSuccess} = useAsync()
+  const { data, error, isLoading, isError, isSuccess } = useQuery({
+    queryKey: ['bookSearch', { query }],
+    queryFn: () => client(`books?query=${encodeURIComponent(query)}`, {
+      token: user.token
+    }).then(data => data.books)
+  });
 
   const books = data ?? loadingBooks
-
-  React.useEffect(() => {
-    if (!queried) {
-      return
-    }
-    run(
-      client(`books?query=${encodeURIComponent(query)}`, {
-        token: user.token,
-      }).then(data => data.books),
-    )
-  }, [query, queried, run, user.token])
 
   function handleSearchSubmit(event) {
     event.preventDefault()
